@@ -4,7 +4,7 @@ SocialNetwork (SpringBoot/React)
 
 ## Backend components
 **Dependency**
-- [Springboot] 
+- [Springboot] :semis:
 - [Spring Security]
 - [Spring Data]
 
