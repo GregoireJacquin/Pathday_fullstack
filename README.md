@@ -25,7 +25,8 @@ https://start.spring.io/
 ```
 
 
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
-   [Springboot]: <https://spring.io/projects/spring-boot>
-   [Spring Security]: <https://spring.io/projects/spring-security>
-   [Spring Data]: <https://spring.io/projects/spring-data>
+[//]: # "These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax"
+[Springboot]: <https://spring.io/projects/spring-boot>
+[Spring Security]: <https://spring.io/projects/spring-security>
+[Spring Data]: <https://spring.io/projects/spring-data>
+
