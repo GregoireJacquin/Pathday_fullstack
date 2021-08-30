@@ -54,6 +54,27 @@ describe('UserSignupPage', () => {
                 }
             };
         };
+
+        let button,displayNameInput,usernameInput,passwordInput,repeatPasswordInput;
+
+         const setupFormSubmit = (props) => {
+
+            const rendered = render(<UserSignupPage {...props}/>);
+            const {container, queryByPlaceholderText} = rendered;
+            displayNameInput = queryByPlaceholderText('Your Display name');
+            usernameInput = queryByPlaceholderText('Your username');
+            passwordInput = queryByPlaceholderText('Your password');
+            repeatPasswordInput = queryByPlaceholderText('Repeat your password');
+
+            fireEvent.change(displayNameInput,changeEvent('my-display-name'));
+            fireEvent.change(usernameInput,changeEvent('my-user-name'));
+            fireEvent.change(passwordInput,changeEvent('P@ssword'));
+            fireEvent.change(repeatPasswordInput,changeEvent('P@ssword'));
+            button = container.querySelector('button');
+
+            return rendered;
+        }
+
         it('set the DisplayName value into state',() => {
             const { queryByPlaceholderText } =  render(<UserSignupPage />);
             const displayNameInput = queryByPlaceholderText('Your Display name');
@@ -63,10 +84,10 @@ describe('UserSignupPage', () => {
          });
          it('set the username value into state',() => {
             const { queryByPlaceholderText } =  render(<UserSignupPage />);
-            const dusernameInput = queryByPlaceholderText('Your username');
+            const usernameInput = queryByPlaceholderText('Your username');
             
-            fireEvent.change(dusernameInput,changeEvent('my-user-name'));
-            expect(dusernameInput).toHaveValue('my-user-name');
+            fireEvent.change(usernameInput,changeEvent('my-user-name'));
+            expect(usernameInput).toHaveValue('my-user-name');
          });
          it('set the password value into state',() => {
             const { queryByPlaceholderText } =  render(<UserSignupPage />);
@@ -81,6 +102,32 @@ describe('UserSignupPage', () => {
             
             fireEvent.change(repeatPasswordInput,changeEvent('P@ssword'));
             expect(repeatPasswordInput).toHaveValue('P@ssword');
+         });
+         it('call postSignup when the fields are valid and the action provided in props',() => {
+            const actions = {
+               postSignup: jest.fn().mockResolvedValueOnce({})
+            }
+            setupFormSubmit({actions});
+            fireEvent.click(button);
+            expect(actions.postSignup).toHaveBeenCalledTimes(1);
+         });
+         it('does not throw exception when clicking he button when actions not provided in props ',() => {
+            setupFormSubmit();
+            expect(() => fireEvent.click(button)).not.toThrow();
+            
+         });
+         it('calls post with user body hen he fields are valid ',() => {
+            const actions = {
+               postSignup: jest.fn().mockResolvedValueOnce({})
+            }
+            setupFormSubmit({actions});
+            fireEvent.click(button);
+            const exceptedUserObject = {
+               username: 'my-user-name',
+               displayName:'my-display-name',
+               password:'P@ssword'
+            }
+            expect(actions.postSignup).toHaveBeenCalledWith(exceptedUserObject);
          });
     });
 });
