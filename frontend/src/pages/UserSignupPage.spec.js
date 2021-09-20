@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor, waitForDomChange } from '@testing-library/react';
+import { render, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import { UserSignupPage } from './UserSignupPage';
 
@@ -160,32 +160,54 @@ describe('UserSignupPage', () => {
       });
       it('hides spinner after api call succesfully', async () => {
          const actions = {
-            postSignup: mockAsyncDelayed()
-         }
-         const { queryByText } = setupFormSubmit({ actions });
-         fireEvent.click(button);
-         const spinner = queryByText('Loading...');
-         await waitFor(() => {
-            expect(spinner).not.toBeInTheDocument()
-         });
+            postSignup: mockAsyncDelayed(),
+          };
+          const { queryByText } = setupFormSubmit({ actions });
+          fireEvent.click(button);
+    
+          const spinner = queryByText('Loading...');
+          await waitForElementToBeRemoved(spinner);
+    
+          expect(spinner).not.toBeInTheDocument();
       });
       it('hides spinner after api call finish with error', async () => {
          const actions = {
             postSignup: jest.fn().mockImplementation(() => {
-               return new Promise((resolved, reject) => {
-                  setTimeout(() => {
-                     reject({ data: {} });
-                  }, 300);
-               });
-            })
-         }
-         const { queryByText } = setupFormSubmit({ actions });
-         fireEvent.click(button);
-         const spinner = queryByText('Loading...');
-         await waitFor(() => {
-            expect(spinner).not.toBeInTheDocument()
-         });
+              return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  reject({
+                    response: { data: {} },
+                  });
+                }, 300);
+              });
+            }),
+          };
+          const { queryByText } = setupFormSubmit({ actions });
+          fireEvent.click(button);
+    
+          const spinner = queryByText('Loading...');
+          await waitForElementToBeRemoved(spinner);
+          expect(spinner).not.toBeInTheDocument();
       });
+      it('display validation error for displayname when error is receive for the field', async () => {
+         const actions = {
+            postSignup: jest.fn().mockRejectedValue({
+              response: {
+                data: {
+                  validationErrors: {
+                    displayName: 'Cannot be null',
+                  },
+                },
+              },
+            }),
+          };
+          const { findByText } = setupFormSubmit({ actions });
+          fireEvent.click(button);
+    
+          const errorMessage = await findByText('Cannot be null');
+    
+          expect(errorMessage).toBeInTheDocument();
+        });
    });
 });
 console.error = () => { };

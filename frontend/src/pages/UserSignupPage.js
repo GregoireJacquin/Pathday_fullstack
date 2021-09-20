@@ -7,7 +7,8 @@ export class UserSignupPage extends React.Component {
         username: '',
         password: '',
         passwordRepeat: '',
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors:{}
     }
 
     onChangeDisplayName = (event) => {
@@ -37,10 +38,13 @@ export class UserSignupPage extends React.Component {
         .then(response => {
             this.setState({ pendingApiCall: false });
         })
-        .catch(error => {
-            this.setState({ pendingApiCall: false });
-        })
-        console.log(user)
+        .catch(apiError => {
+            let errors = {...this.state.errors}
+            if(apiError.response.data && apiError.response.data.validationErrors){
+                errors = {...apiError.response.data.validationErrors}
+            }
+            this.setState({ pendingApiCall: false,errors});
+        });
     }
 
     render() {
@@ -48,7 +52,8 @@ export class UserSignupPage extends React.Component {
             <div className="container">
                 <h1 className="text-center">Sign Up</h1>
                 <div className="col-12 mb-3"><label>Display Name</label>
-                    <input className="form-control" placeholder='Your Display name' value={this.state.displayName} onChange={this.onChangeDisplayName}></input></div>
+                    <input className="form-control" placeholder='Your Display name' value={this.state.displayName} onChange={this.onChangeDisplayName}></input>
+                    <div className="invalid-feedback">{this.state.errors.displayName}</div></div>
                 <div className="col-12 mb-3"><label>Username</label><input className="form-control" placeholder='Your username' value={this.state.username} onChange={this.onChangeUsername}></input></div>
                 <div className="col-12 mb-3"><label>Password</label><input className="form-control" placeholder='Your password' type='password' value={this.state.password} onChange={this.onChangePassword}></input></div>
                 <div className="col-12 mb-3"><label>Repeat Password</label><input className="form-control" placeholder='Repeat your password' type='password' value={this.state.passwordRepeat} onChange={this.onChangePasswordRepeat}></input></div>
