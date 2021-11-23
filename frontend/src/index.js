@@ -5,15 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {UserSignupPage} from './pages/UserSignupPage';
 import * as apiCalls from './api/apiCalls';
+import LoginPage from './pages/LoginPage';
 
 const actions = {
   postSignup: apiCalls.signup
 }
 
 ReactDOM.render(
-  <React.StrictMode>
-    <UserSignupPage actions={actions}/>
-  </React.StrictMode>,
+  <LoginPage/>,
   document.getElementById('root')
 );
 
